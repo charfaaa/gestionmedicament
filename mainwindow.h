@@ -1,7 +1,7 @@
-#ifndef MACLASSE_H
-#define MACLASSE_H
-#include<medicament.h>
-#include<QMainWindow>
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+#include "medicament.h"
+#include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -16,11 +16,12 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButton_clicked();
+    void on_pushButton_ajouter_clicked();
 
-    void on_pushButton_2_clicked();
+    void on_pushButton_supp_clicked();
 
 private:
     Ui::MainWindow *ui;
+    medicament m;
 };
-#endif // MACLASSE_H
+#endif // MAINWINDOW_H
