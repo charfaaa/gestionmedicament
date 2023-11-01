@@ -1,51 +1,49 @@
-#ifndef MEDICAMENT_H
-#define MEDICAMENT_H
-
-#include <QMainWindow>
-#include <QObject>
-#include <QWidget>
+#ifndef CLIENT_H
+#define CLIENT_H
 #include<QString>
 #include <QSqlQuery>
 #include <QObject>
+#include <QMainWindow>
+#include <QSqlError>
 #include<QSqlQueryModel>
 #include<iostream>
 using namespace std;
-
-
 class medicament {
     public:
         medicament();
-        medicament(int,QString,QString,int,int,int);
-        //virtual ~medicament();
+        medicament(QString,QString,QString,QString,int,int);
+
+        //virtual ~Client();
 
 
-        int Getcode() { return code; }
-        void Setcode(int val) { code = val; }
+        QString Getcode() { return code; }
+        void Setcode(QString val) { code = val; }
+        QString Gettype() { return type; }
+        void Settype(QString val) { type = val; }
         QString Getnom() { return nom; }
         void Setnom(QString val) { nom = val; }
-        QString Gettype() { return type; }
-        void Set(QString val) { type = val; }
-        int Getqte() { return qte; }
-        void Setqte(int val) { qte = val; }
+        QString Getqte() { return qte; }
+        void Setqte(QString val) { qte = val; }
+
         int Getprix() { return prix; }
         void Setprix(int val) { prix = val; }
         int Getddp() { return ddp; }
         void Setddp(int val) { ddp = val; }
 
-        int code;
+        QString code;
         QString nom;
+        QString qte;
         QString type;
-        int qte;
         int ddp;
         //crud
         bool ajouter();
         QSqlQueryModel*afficher();
-        bool supprimer(int);
+        bool supprimer(QString);
+        bool modifier(QString);
     protected:
 
     private:
-        int prix ;
+        int prix;
 };
 
-
-#endif // MEDICAMENT_H
+#endif // CLIENT_H

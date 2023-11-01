@@ -7,11 +7,10 @@
 using namespace std;
 class Connection
 {
-     QSqlDatabase db;
+    QSqlDatabase db;
 public:
     Connection();
     bool createconnect();
     void closeconnection();
 };
-
 #endif // CONNECTION_H

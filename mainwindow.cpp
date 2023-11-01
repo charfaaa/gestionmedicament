@@ -25,16 +25,19 @@ MainWindow::~MainWindow()
 void MainWindow::on_pushButton_ajouter_clicked()
 {
  qDebug();
-    int code=ui->lineEdit->text().toInt();
+
+    QString code=ui->lineEdit->text();
     QString nom=ui->lineEdit_2->text();
      QString type=ui->lineEdit_3->text();
+      QString qte=ui->lineEdit_4->text();
+     int prix=ui->lineEdit_5->text().toInt();
       int ddp=ui->lineEdit_6->text().toInt();
-      int prix=ui->lineEdit_5->text().toInt();
-      int qte=ui->lineEdit_4->text().toInt();
+
       medicament m(code,nom,type,qte,prix,ddp);
 
 bool test=m.ajouter();
 if (test){
+    ui->tableView->setModel(m.afficher());
     QMessageBox::information(nullptr, QObject::tr("ok"),
                 QObject::tr("ajout avec success.\n"
                             "Click Cancel to exit."), QMessageBox::Cancel);
@@ -49,10 +52,12 @@ else
 
 void MainWindow::on_pushButton_supp_clicked()
 {
-    int code=ui->lineEdit_9->text().toInt();
+    QString code=ui->lineEdit_9->text();
 bool test=m.supprimer(code);
 if (test)
- {   QMessageBox::information(nullptr, QObject::tr("ok"),
+ {    ui->tableView->setModel(m.afficher());
+
+    QMessageBox::information(nullptr, QObject::tr("ok"),
                 QObject::tr("suppression avec success.\n"
                             "Click Cancel to exit."), QMessageBox::Cancel);
 }
@@ -63,3 +68,31 @@ else
 
 }
 
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    qDebug();
+
+       QString code=ui->lineEdit->text();
+       QString nom=ui->lineEdit_2->text();
+        QString type=ui->lineEdit_3->text();
+         QString qte=ui->lineEdit_4->text();
+         int prix=ui->lineEdit_5->text().toInt();
+         int ddp=ui->lineEdit_6->text().toInt();
+
+         medicament m(code,nom,type,qte,prix,ddp);
+
+   bool test=m.modifier(code);
+   if (test){
+       ui->tableView->setModel(m.afficher());
+       QMessageBox::information(nullptr, QObject::tr("ok"),
+                   QObject::tr("update avec success.\n"
+                               "Click Cancel to exit."), QMessageBox::Cancel);
+
+   }
+   else
+       QMessageBox::critical(nullptr, QObject::tr("not ok"),
+                   QObject::tr(" update non effectué.\n"
+                               "Click Cancel to exit."), QMessageBox::Cancel);
+
+}
