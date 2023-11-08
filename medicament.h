@@ -1,49 +1,53 @@
-#ifndef CLIENT_H
-#define CLIENT_H
-#include<QString>
-#include <QSqlQuery>
+#ifndef MEDICAMENT_H
+#define MEDICAMENT_H
+
 #include <QObject>
-#include <QMainWindow>
-#include <QSqlError>
-#include<QSqlQueryModel>
-#include<iostream>
-using namespace std;
-class medicament {
-    public:
-        medicament();
-        medicament(QString,QString,QString,QString,int,int);
+#include <QWidget>
+#include <QString>
+#include <QDate>
+#include <QSqlQueryModel>
 
-        //virtual ~Client();
+class Medicament
+{
+public:
+    Medicament();
+
+    Medicament(int code, QString nom, QString type, QDate dateNaissance, QString prix , int qte);
+
+    // Getters
+    int getcode() const;
+    QString getnom() const;
+    QString gettype() const;
+    QDate getdateNaissance() const;
+    QString getprix() const;
+    int getqte() const;
+
+    // Setters
+    void setcode(int code);
+    void setnom(const QString &nom);
+    void settype(const QString &type);
+    void setdateNaissance(const QDate &dateNaissance);
+    void setprix(const QString &prix);
+    void setqte(int qte);
+
+    bool ajouter();
+    static QSqlQueryModel* afficher();
+    static bool supprimer(int code);
+    static Medicament findBycode(int code);
+    bool modifier();
 
 
-        QString Getcode() { return code; }
-        void Setcode(QString val) { code = val; }
-        QString Gettype() { return type; }
-        void Settype(QString val) { type = val; }
-        QString Getnom() { return nom; }
-        void Setnom(QString val) { nom = val; }
-        QString Getqte() { return qte; }
-        void Setqte(QString val) { qte = val; }
+    static void imprimer(int code);
+    static QSqlQueryModel* trie(QString croissance, QString critere);
+    static QHash<QString, int> getqteDistribution();
 
-        int Getprix() { return prix; }
-        void Setprix(int val) { prix = val; }
-        int Getddp() { return ddp; }
-        void Setddp(int val) { ddp = val; }
-
-        QString code;
-        QString nom;
-        QString qte;
-        QString type;
-        int ddp;
-        //crud
-        bool ajouter();
-        QSqlQueryModel*afficher();
-        bool supprimer(QString);
-        bool modifier(QString);
-    protected:
-
-    private:
-        int prix;
+private:
+    int code;
+    QString nom;
+    QString type;
+    QDate dateNaissance;
+    QString prix;
+    int qte;
 };
 
-#endif // CLIENT_H
+#endif // MEDICAMENT_H

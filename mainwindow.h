@@ -1,7 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-#include "medicament.h"
+
 #include <QMainWindow>
+#include "medicament_ui.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -12,18 +13,15 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+  explicit  MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
 private slots:
-    void on_pushButton_ajouter_clicked();
+    void openMedicamentUI();
 
-    void on_pushButton_supp_clicked();
 
-    void on_pushButton_2_clicked();
 
 private:
     Ui::MainWindow *ui;
-    medicament m;
+    Medicament_ui *medicamentUI ;
 };
 #endif // MAINWINDOW_H

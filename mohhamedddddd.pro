@@ -1,10 +1,12 @@
 QT       += core gui
-QT       += core gui sql
-QT       +=sql
+
+QT += sql
+QT += printsupport
+QT += charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += QTE
+CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -18,18 +20,21 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Medicament.cpp \
     connection.cpp \
     main.cpp \
     mainwindow.cpp \
-    medicament.cpp
+    medicament_ui.cpp
 
 HEADERS += \
+    Medicament.h \
     connection.h \
     mainwindow.h \
-    medicament.h
+    medicament_ui.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    medicament_ui.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

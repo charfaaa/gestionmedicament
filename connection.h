@@ -3,14 +3,13 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
-#include <QDebug>
-using namespace std;
+#include <QObject>
+
 class Connection
 {
-    QSqlDatabase db;
 public:
     Connection();
     bool createconnect();
-    void closeconnection();
 };
+
 #endif // CONNECTION_H
