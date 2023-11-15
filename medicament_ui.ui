@@ -22,7 +22,7 @@
      <height>601</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,8">
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
     <property name="spacing">
      <number>6</number>
     </property>
@@ -55,6 +55,9 @@
              <stylestrategy>PreferAntialias</stylestrategy>
             </font>
            </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(0, 0, 255);</string>
+           </property>
            <property name="text">
             <string>Gestion des medicament</string>
            </property>
@@ -75,6 +78,9 @@
         <weight>75</weight>
         <bold>true</bold>
        </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(85, 255, 127);</string>
       </property>
       <property name="currentIndex">
        <number>1</number>
@@ -160,7 +166,7 @@
              <item row="4" column="0">
               <widget class="QLabel" name="dateDeNaissanceLabel">
                <property name="text">
-                <string>Date de Naissance :</string>
+                <string>Date de peremption</string>
                </property>
               </widget>
              </item>
@@ -312,7 +318,7 @@
                 </layout>
                </item>
                <item>
-                <layout class="QVBoxLayout" name="verticalLayout_5" stretch="1,2">
+                <layout class="QVBoxLayout" name="verticalLayout_5" stretch="1,0,2">
                  <item alignment="Qt::AlignHCenter">
                   <widget class="QWidget" name="horizontalWidget_6" native="true">
                    <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -351,6 +357,13 @@
                      </widget>
                     </item>
                    </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButton_afficher_peremption">
+                   <property name="text">
+                    <string>les medicament a bientot expiré </string>
+                   </property>
                   </widget>
                  </item>
                  <item>
@@ -472,6 +485,11 @@
          </layout>
         </widget>
        </widget>
+      </widget>
+      <widget class="QWidget" name="tab4">
+       <attribute name="title">
+        <string>Alerte Expiration</string>
+       </attribute>
       </widget>
      </widget>
     </item>

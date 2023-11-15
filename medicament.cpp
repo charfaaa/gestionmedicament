@@ -1,4 +1,5 @@
 #include "Medicament.h"
+#include "medicament_ui.h"
 #include <QString>
 #include <QSqlQuery>
 #include <QtDebug>
@@ -6,18 +7,23 @@
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QPainter>
+#include <QDebug>
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QDateTime>
+#include <QDate>
 
 Medicament::Medicament()
 {
     code = 0;
     qte = 0;
 }
-Medicament::Medicament(int code, QString nom, QString type, QDate dateNaissance, QString prix, int qte)
+Medicament::Medicament(int code, QString nom, QString type, QDate dateperemption , QString prix, int qte)
 {
     this->code = code;
     this->nom = nom;
     this->type = type;
-    this->dateNaissance = dateNaissance;
+    this->dateperemption = dateperemption;
     this->prix = prix;
     this->qte = qte;
 }
@@ -33,8 +39,8 @@ QString Medicament::gettype() const {
     return type;
 }
 
-QDate Medicament::getdateNaissance() const {
-    return dateNaissance;
+QDate Medicament::getdateperemption() const {
+    return dateperemption;
 }
 
 QString Medicament::getprix() const {
@@ -58,8 +64,8 @@ void Medicament::settype(const QString &type) {
     this->type = type;
 }
 
-void Medicament::setdateNaissance(const QDate &dateNaissance) {
-    this->dateNaissance = dateNaissance;
+void Medicament::setdateperemption(const QDate &dateperemption) {
+    this->dateperemption = dateperemption;
 }
 
 void Medicament::setprix(const QString &prix) {
@@ -74,11 +80,11 @@ void Medicament::setqte(int qte) {
 bool Medicament::ajouter()
 {
     QSqlQuery q;
-    q.prepare("INSERT INTO MEDICAMENT (code,nom, type, dateNaissance, prix,qte) VALUES (:code, :nom, :type, :dateNaissance, :prix, :qte)");
+    q.prepare("INSERT INTO MEDICAMENT (code,nom, type, dateperemption, prix,qte) VALUES (:code, :nom, :type, :dateperemption, :prix, :qte)");
     q.bindValue(":code", code);
     q.bindValue(":nom", nom);
     q.bindValue(":type", type);
-    q.bindValue(":dateNaissance", dateNaissance);
+    q.bindValue(":dateperemption", dateperemption);
     q.bindValue(":prix", prix);
     q.bindValue(":qte", qte);
 
@@ -91,9 +97,9 @@ QSqlQueryModel* Medicament::afficher()
     model->setHeaderData(0, Qt::Horizontal, QObject::tr("code"));
     model->setHeaderData(1, Qt::Horizontal, QObject::tr("nom"));
     model->setHeaderData(2, Qt::Horizontal, QObject::tr("type"));
-    model->setHeaderData(3, Qt::Horizontal, QObject::tr("dateNaissance"));
+    model->setHeaderData(3, Qt::Horizontal, QObject::tr("dateperemption"));
     model->setHeaderData(4, Qt::Horizontal, QObject::tr("prix"));
-    model->setHeaderData(6, Qt::Horizontal, QObject::tr("qte"));
+    model->setHeaderData(5, Qt::Horizontal, QObject::tr("qte"));
 
     return model;
 }
@@ -116,10 +122,10 @@ Medicament Medicament::findBycode(int code)
     if (q.exec() && q.next()) {
         QString nom = q.value("nom").toString();
         QString type= q.value("type").toString();
-        QDate dateNaissance = q.value("dateNaissance").toDate();
+        QDate dateperemption = q.value("dateperemption").toDate();
         QString prix = q.value("prix").toString();
         int qte = q.value("qte").toInt();
-        return Medicament(code, nom, type , dateNaissance, prix , qte);
+        return Medicament(code, nom, type , dateperemption, prix , qte);
     }
 
     return Medicament();
@@ -128,10 +134,10 @@ Medicament Medicament::findBycode(int code)
 bool Medicament::modifier()
 {
     QSqlQuery q;
-    q.prepare("UPDATE MEDICAMENT SET nom = :nom, type = :type, dateNaissance = :dateNaissance, prix = :prix, qte = :qte WHERE code = :code");
+    q.prepare("UPDATE MEDICAMENT SET nom = :nom, type = :type, dateperemption = :dateNdateperemptionaissance, prix = :prix, qte = :qte WHERE code = :code");
     q.bindValue(":nom", nom);
     q.bindValue(":type", type);
-    q.bindValue(":dateNaissance", dateNaissance);
+    q.bindValue(":dateperemption", dateperemption);
     q.bindValue(":prix", prix);
     q.bindValue(":qte", qte);
     q.bindValue(":code", code);
@@ -154,7 +160,10 @@ void Medicament::imprimer(int code)
 
     QPainter painter(&printer);
     painter.setFont(QFont("Verdana", 30));
+    painter.setPen(QColor(Qt::green)); // Set color to dark blue
+
     painter.drawText(200, 1000, "Fiche des medicament");
+    painter.setPen(QColor(Qt::blue)); // Set color to dark blue
 
     painter.setFont(QFont("Verdana", 12));
     y0 += 250;
@@ -165,14 +174,14 @@ void Medicament::imprimer(int code)
     titleFont.setUnderline(true);
     titleFont.setCapitalization(QFont::AllUppercase);
     painter.setFont(titleFont);
+    painter.setPen(QColor(Qt::black)); // Set color to dark blue
 
-    painter.setPen(QColor(Qt::darkBlue)); // Set color to dark blue
 
     QStringList subtitles = {
         "CODE",
         "NOM",
         "TYPE",
-        "DATE DE NAISSANCE",
+        "DATE DE PEREMPTION ",
         "PRIX",
         "QUANTITE"
     };
@@ -181,7 +190,7 @@ void Medicament::imprimer(int code)
         QString::number(e.getcode()),
         e.getnom(),
         e.gettype(),
-        e.getdateNaissance().toString(),
+        e.getdateperemption().toString(),
         e.getprix(),
         QString::number(e.getqte())
     };
@@ -215,40 +224,63 @@ QSqlQueryModel* Medicament::trie(QString croissance, QString critere)
 
     return modal;
 }
-
-QHash<QString, int> Medicament::getqteDistribution()
+QHash<QString, int> Medicament::getqteTypeDistribution()
 {
-    QHash<QString, int> qteDistribution;
+    QHash<QString, int> qteTypeDistribution;
 
-    // Récupérez la liste des élèves depuis votre base de données
-    // Par exemple, vous pouvez utiliser votre fonction afficher() pour obtenir une liste de tous les élèves.
+    // Récupérez la liste des médicaments depuis votre base de données
+    // Par exemple, vous pouvez utiliser votre fonction afficher() pour obtenir une liste de tous les médicaments.
     QSqlQueryModel* model = afficher();
 
-    // Calculez l'âge de chaque élève et mettez à jour la répartition par âge
-    QDateTime now = QDateTime::currentDateTime();
     for (int row = 0; row < model->rowCount(); ++row) {
-        int qte = model->data(model->index(row, 6)).toInt(); // Supposons que la date de naissance est dans la colonne 3
+        int qte = model->data(model->index(row, 5)).toInt(); // Supposons que la quantité est dans la colonne 5
+        QString type = model->data(model->index(row, 2)).toString(); // Supposons que le type est dans la colonne 7
 
-        // Classifiez l'âge dans des groupes
-        QString qteGroup;
-        if (qte < 2) {
-            qteGroup = "Moins de 2 ans";
-        } else if (qte < 4) {
-            qteGroup = "2-4 ans";
-        } else if (qte < 6) {
-            qteGroup = "4-6 ans";
+        // Mettez à jour la répartition par type
+        if (qteTypeDistribution.contains(type)) {
+            qteTypeDistribution[type] += qte;
         } else {
-            qteGroup = "6 ans et plus";
-        }
-
-        // Mettez à jour la répartition par âge
-        if (qteDistribution.contains(qteGroup)) {
-            qteDistribution[qteGroup]++;
-        } else {
-            qteDistribution[qteGroup] = 1;
+            qteTypeDistribution[type] = qte;
         }
     }
 
-    return qteDistribution;
+    return qteTypeDistribution;
+}
+bool Medicament::Vide() {
+    QSqlQuery query;
+    query.prepare("SELECT COUNT(*) FROM MEDICAMENT");
+    if (query.exec() && query.next()) {
+        int rowCount = query.value(0).toInt();
+        return rowCount == 0;
+    }
+    return false; // En cas d'erreur ou autre problème
 }
 
+// ... Autres inclus
+
+QSqlQueryModel* Medicament::afficherPeremptionMoinsUnMois()
+{
+    QSqlQueryModel* model = new QSqlQueryModel();
+
+    // Obtenez la date actuelle
+    QDate currentDate = QDate::currentDate();
+
+    // Soustrayez un mois de la date actuelle
+    QDate oneMonthAgo = currentDate.addMonths(-1);
+
+    // Exécutez la requête pour obtenir les médicaments dont la date de péremption est inférieure à un mois
+    QSqlQuery query;
+    query.prepare("SELECT * FROM MEDICAMENT WHERE dateperemption <= :currentDate AND dateperemption >= :oneMonthAgo");
+    query.bindValue(":currentDate", currentDate);
+    query.bindValue(":oneMonthAgo", oneMonthAgo);
+
+    if (query.exec()) {
+        model->setQuery(query);
+        // Définissez les en-têtes de colonnes si nécessaire
+        model->setHeaderData(0, Qt::Horizontal, QObject::tr("code"));
+        model->setHeaderData(1, Qt::Horizontal, QObject::tr("nom"));
+        // ... Définissez les en-têtes pour d'autres colonnes
+    }
+
+    return model;
+}

@@ -10,6 +10,7 @@
 #include<QStandardItemModel>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QSystemTrayIcon>
 
 #include <QtCharts/QChartView>
 #include <QtCharts/QPieSeries>
@@ -21,6 +22,10 @@ Medicament_ui::Medicament_ui(QWidget *parent) :
     ui(new Ui::Medicament_ui)
 {
     ui->setupUi(this);
+    mSystemTrayIcon = new QSystemTrayIcon(this);
+    mSystemTrayIcon->setIcon(QIcon(":/myappico.png"));
+    mSystemTrayIcon->setVisible(true);
+    verifierTableVide();
     ui->iDLineEdit->setValidator(new QIntValidator(0, 999999, this)); // only input int
     ui->prNomLineEdit->setValidator(new QRegExpValidator(QRegExp("[a-zA-Z]+"), this)); // only input int
     ui->nomLineEdit->setValidator(new QRegExpValidator(QRegExp("[a-zA-Z]+"), this)); // only input alphabetic characters
@@ -28,6 +33,7 @@ Medicament_ui::Medicament_ui(QWidget *parent) :
     ui->tableView->setModel(Medicament::afficher());
 
 }
+
 
 Medicament_ui::~Medicament_ui()
 {
@@ -47,7 +53,7 @@ void Medicament_ui::on_pushButton_ajout_clicked()
     QString nom = ui->prNomLineEdit->text();
     QString type = ui->nomLineEdit->text();
     QString prix = ui->adresseLineEdit->text();
-    QDate DateNaissance = ui->dateDeNaissanceDateEdit->date();
+    QDate dateperemption = ui->dateDeNaissanceDateEdit->date();
     int qte = ui->ancienneteLineEdit->text().toInt();
 
     // Input validation
@@ -68,6 +74,12 @@ void Medicament_ui::on_pushButton_ajout_clicked()
     if (nom.isEmpty()) {
         QMessageBox::critical(nullptr, QObject::tr("Ajout Medicament"),
                     QObject::tr("Medicament non ajouté. Nom invalide.\n"
+                                "Cliquer quitter."), QMessageBox::Cancel);
+        return;
+    }
+    if (!dateperemption.isValid()) {
+        QMessageBox::critical(nullptr, QObject::tr("Ajout Medicament"),
+                    QObject::tr("Medicament non ajouté. Date invalide.\n"
                                 "Cliquer quitter."), QMessageBox::Cancel);
         return;
     }
@@ -97,7 +109,7 @@ void Medicament_ui::on_pushButton_ajout_clicked()
         return;
     }
 
-    Medicament e(code, nom, type, DateNaissance, prix, qte);
+    Medicament e(code, nom, type, dateperemption, prix, qte);
 
     if(e.ajouter())
     {
@@ -153,7 +165,7 @@ void Medicament_ui::on_tableView_activated(const QModelIndex &index)
     int code = model->data(model->index(index.row(), 0)).toInt();
     QString nom = model->data(model->index(index.row(), 1)).toString();
     QString type = model->data(model->index(index.row(), 2)).toString();
-    QDate dateNaissance = model->data(model->index(index.row(), 3)).toDate();
+    QDate dateperemption = model->data(model->index(index.row(), 3)).toDate();
     QString prix = model->data(model->index(index.row(), 4)).toString();
     int qte = model->data(model->index(index.row(), 6)).toInt();
 
@@ -162,7 +174,7 @@ void Medicament_ui::on_tableView_activated(const QModelIndex &index)
     ui->lineEdit_pdf->setText(QString::number(code));
     ui->prNomLineEdit->setText(nom);
     ui->nomLineEdit->setText(type);
-    ui->dateDeNaissanceDateEdit->setDate(dateNaissance);
+    ui->dateDeNaissanceDateEdit->setDate(dateperemption);
     ui->adresseLineEdit->setText(prix);
     ui->ancienneteLineEdit->setText(QString::number(qte));
 
@@ -174,7 +186,7 @@ void Medicament_ui::on_pushButton_modifier_clicked()
     QString nom = ui->prNomLineEdit->text();
     QString type = ui->nomLineEdit->text();
     QString prix = ui->adresseLineEdit->text();
-    QDate dateNaissance = ui->dateDeNaissanceDateEdit->date();
+    QDate dateperemption = ui->dateDeNaissanceDateEdit->date();
     int qte = ui->ancienneteLineEdit->text().toInt();
 
     if (code <= 0) {
@@ -197,6 +209,12 @@ void Medicament_ui::on_pushButton_modifier_clicked()
         return;
     }
 
+    if (!dateperemption.isValid()) {
+        QMessageBox::critical(nullptr, QObject::tr("Ajout Medicament"),
+                    QObject::tr("Medicament non ajouté. Date invalide.\n"
+                                "Cliquer quitter."), QMessageBox::Cancel);
+        return;
+    }
     if (prix.isEmpty()) {
         QMessageBox::critical(nullptr, QObject::tr("Modifier MEDICAMENT"),
                     QObject::tr("MEDICAMENT non Modifie. prix invalide.\n"
@@ -222,7 +240,7 @@ void Medicament_ui::on_pushButton_modifier_clicked()
         return;
     }
 
-    Medicament e(code, nom, type, dateNaissance , prix, qte);
+    Medicament e(code, nom, type, dateperemption , prix, qte);
 
     if(e.modifier()) {
         QMessageBox::information(nullptr, QObject::tr("Modifier MEDICAMENT"),
@@ -300,16 +318,16 @@ void Medicament_ui::on_search_field_textChanged(const QString &arg1)
         newModel->setHorizontalHeaderItem(0, new QStandardItem(QString("code")));
         newModel->setHorizontalHeaderItem(1, new QStandardItem(QString("nom")));
         newModel->setHorizontalHeaderItem(2, new QStandardItem(QString("type")));
-        newModel->setHorizontalHeaderItem(3, new QStandardItem(QString("Date de Naissance")));
+        newModel->setHorizontalHeaderItem(3, new QStandardItem(QString("Date de peremption")));
         newModel->setHorizontalHeaderItem(4, new QStandardItem(QString("prix")));
-        newModel->setHorizontalHeaderItem(6, new QStandardItem(QString("qte")));
+        newModel->setHorizontalHeaderItem(5, new QStandardItem(QString("qte")));
 
         while (query.next()) {
             QList<QStandardItem*> rowItems;
             rowItems.append(new QStandardItem(query.value("code").toString()));
             rowItems.append(new QStandardItem(query.value("nom").toString()));
             rowItems.append(new QStandardItem(query.value("type").toString()));
-            rowItems.append(new QStandardItem(query.value("Date de Naissance").toString()));
+            rowItems.append(new QStandardItem(query.value("dateperemption").toString()));
             rowItems.append(new QStandardItem(query.value("prix").toString()));
             rowItems.append(new QStandardItem(query.value("qte").toString()));
             newModel->appendRow(rowItems);
@@ -331,7 +349,7 @@ void Medicament_ui::on_pushButton_stats_clicked()
         // Ajoutez des tranches (slices) pour chaque groupe d'âge
         // Vous devrez obtenir les données de votre base de données ici
         // Par exemple, supposons que vous ayez une fonction "getAgeDistribution()" qui renvoie un QHash<QString, int>
-        QHash<QString, int> Distribution = Medicament::getqteDistribution();
+        QHash<QString, int> Distribution = Medicament::getqteTypeDistribution();
 
         for (const QString &Group : Distribution.keys()) {
             QtCharts::QPieSlice *slice = series->append(Group, Distribution.value(Group));
@@ -354,5 +372,10 @@ void Medicament_ui::on_pushButton_stats_clicked()
         chartWindow->show();
 }
 
-
-
+void Medicament_ui::verifierTableVide() {
+    Medicament medicament;
+            if (medicament.Vide()) {
+                mSystemTrayIcon->showMessage(tr("WARNING"),
+                                             tr("Pas des medicaments disponibles pour le moument."));
+       }
+}

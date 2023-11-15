@@ -12,13 +12,13 @@ class Medicament
 public:
     Medicament();
 
-    Medicament(int code, QString nom, QString type, QDate dateNaissance, QString prix , int qte);
+    Medicament(int code, QString nom, QString type, QDate dateperemption, QString prix , int qte);
 
     // Getters
     int getcode() const;
     QString getnom() const;
     QString gettype() const;
-    QDate getdateNaissance() const;
+    QDate getdateperemption() const;
     QString getprix() const;
     int getqte() const;
 
@@ -26,7 +26,7 @@ public:
     void setcode(int code);
     void setnom(const QString &nom);
     void settype(const QString &type);
-    void setdateNaissance(const QDate &dateNaissance);
+    void setdateperemption(const QDate &dateNaissance);
     void setprix(const QString &prix);
     void setqte(int qte);
 
@@ -35,17 +35,17 @@ public:
     static bool supprimer(int code);
     static Medicament findBycode(int code);
     bool modifier();
-
-
+    bool Vide();
     static void imprimer(int code);
     static QSqlQueryModel* trie(QString croissance, QString critere);
-    static QHash<QString, int> getqteDistribution();
+    static QHash<QString, int> getqteTypeDistribution();
+    static QSqlQueryModel* afficherPeremptionMoinsUnMois();
 
 private:
     int code;
     QString nom;
     QString type;
-    QDate dateNaissance;
+    QDate dateperemption;
     QString prix;
     int qte;
 };

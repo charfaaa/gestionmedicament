@@ -1,5 +1,5 @@
 QT       += core gui
-
+QT += widgets
 QT += sql
 QT += printsupport
 QT += charts
@@ -36,7 +36,13 @@ FORMS += \
     mainwindow.ui \
     medicament_ui.ui
 
+RC_ICONS = myappico.ico
+
+QMAKE_CXXFLAGS += -std=gnu++14
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    res.qrc

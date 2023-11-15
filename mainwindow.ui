@@ -17,7 +17,7 @@
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>-60</x>
+      <x>30</x>
       <y>50</y>
       <width>691</width>
       <height>206</height>
@@ -35,6 +35,9 @@
             <weight>75</weight>
             <bold>true</bold>
            </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(85, 255, 127);</string>
           </property>
           <property name="text">
            <string>PHARMADELIVER</string>
@@ -61,6 +64,10 @@
           <font>
            <pointsize>12</pointsize>
           </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: rgb(85, 255, 127);
+</string>
          </property>
          <property name="text">
           <string>GESTION DES MEDICAMENT</string>
