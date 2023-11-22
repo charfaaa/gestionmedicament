@@ -362,7 +362,7 @@
                  <item>
                   <widget class="QPushButton" name="pushButton_afficher_peremption">
                    <property name="text">
-                    <string>les medicament a bientot expiré </string>
+                    <string>Afiicher les medicament perimés</string>
                    </property>
                   </widget>
                  </item>
